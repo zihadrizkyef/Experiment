@@ -13,6 +13,7 @@ import android.view.SurfaceHolder
 import com.zref.experiment.R
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import com.zref.experiment.databinding.CustomerDisplayBinding
 
@@ -22,9 +23,6 @@ class CustomerDisplayPresentation(
 ) : Presentation(context, display) {
 
     private lateinit var binding: CustomerDisplayBinding
-    private var mediaPlayer = MediaPlayer()
-    private var surfaceHolder: SurfaceHolder? = null
-    private var videoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,37 +33,28 @@ class CustomerDisplayPresentation(
             width = display.width
             height = display.height
         }
-
-        binding.surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-            override fun surfaceCreated(holder: SurfaceHolder) {
-                surfaceHolder = holder
-                if (videoUri != null) {
-                    mediaPlayer.reset()
-                    mediaPlayer.setDisplay(surfaceHolder)
-                    if (videoUri != null) {
-                        mediaPlayer.setDataSource(context, videoUri!!)
-                        mediaPlayer.isLooping = true
-                        mediaPlayer.prepare()
-                        mediaPlayer.start()
-                    }
-                }
-            }
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                surfaceHolder = null
-            }
-        })
     }
 
     fun setVideoUri(uri: Uri) {
-        videoUri = uri
-        if (surfaceHolder != null) {
-            mediaPlayer.reset()
-            mediaPlayer.setDisplay(surfaceHolder)
+        binding.videoView.setVideoURI(uri)
+        binding.videoView.start()
+        binding.videoView.setOnPreparedListener {
+            val scaleX = display.width.toFloat() / it.videoWidth.toFloat()
+            val scaleY = display.height.toFloat() / it.videoHeight.toFloat()
+
+            if (scaleX > scaleY) {
+                binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    width = (it.videoWidth * scaleX).toInt()
+                    height = (it.videoHeight * scaleX).toInt()
+                }
+            } else {
+                binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    width = (it.videoWidth * scaleY).toInt()
+                    height = (it.videoHeight * scaleY).toInt()
+                }
+            }
+
+            Log.i("AOEU", "display ${display.width}x${display.height} | videoview ${binding.videoView.width}x${binding.videoView.height}")
         }
-        mediaPlayer.setDataSource(context, uri)
-        mediaPlayer.isLooping = true
-        mediaPlayer.prepare()
-        mediaPlayer.start()
     }
 }
