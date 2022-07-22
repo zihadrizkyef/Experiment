@@ -37,6 +37,7 @@ class CustomerDisplayPresentation(
     }
 
     fun setVideoUri(uri: Uri) {
+        Log.i("AOEU", "uri display $uri")
         try {
             binding.textView.isVisible = false
             binding.videoView.isVisible = true
