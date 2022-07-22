@@ -14,6 +14,7 @@ import com.zref.experiment.R
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.zref.experiment.databinding.CustomerDisplayBinding
 
@@ -36,25 +37,32 @@ class CustomerDisplayPresentation(
     }
 
     fun setVideoUri(uri: Uri) {
-        binding.videoView.setVideoURI(uri)
-        binding.videoView.start()
-        binding.videoView.setOnPreparedListener {
-            val scaleX = display.width.toFloat() / it.videoWidth.toFloat()
-            val scaleY = display.height.toFloat() / it.videoHeight.toFloat()
+        try {
+            binding.textView.isVisible = false
+            binding.videoView.isVisible = true
+            binding.videoView.setVideoURI(uri)
+            binding.videoView.start()
+            binding.videoView.setOnPreparedListener {
+                it.isLooping = true
+                val scaleX = display.width.toFloat() / it.videoWidth.toFloat()
+                val scaleY = display.height.toFloat() / it.videoHeight.toFloat()
 
-            if (scaleX > scaleY) {
-                binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    width = (it.videoWidth * scaleX).toInt()
-                    height = (it.videoHeight * scaleX).toInt()
-                }
-            } else {
-                binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    width = (it.videoWidth * scaleY).toInt()
-                    height = (it.videoHeight * scaleY).toInt()
+                if (scaleX > scaleY) {
+                    binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                        width = (it.videoWidth * scaleX).toInt()
+                        height = (it.videoHeight * scaleX).toInt()
+                    }
+                } else {
+                    binding.videoView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                        width = (it.videoWidth * scaleY).toInt()
+                        height = (it.videoHeight * scaleY).toInt()
+                    }
                 }
             }
-
-            Log.i("AOEU", "display ${display.width}x${display.height} | videoview ${binding.videoView.width}x${binding.videoView.height}")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            binding.textView.isVisible = true
+            binding.videoView.isVisible = false
         }
     }
 }
