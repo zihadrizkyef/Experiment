@@ -9,8 +9,10 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.query.RealmQuery
+import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.coroutines.CoroutineScope
@@ -28,8 +30,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val config = RealmConfiguration
-            .Builder(schema = setOf(Book::class))
+            .Builder(schema = setOf(Book::class, User::class))
             .schemaVersion(1)
+            .deleteRealmIfMigrationNeeded()
             .build()
         val realm = Realm.open(configuration = config)
 
@@ -37,40 +40,53 @@ class MainActivity : AppCompatActivity() {
             copyToRealm(Book().apply {
                 id = "0"
                 name = "Book Green"
+                user = realmListOf(
+                    User().apply { id="0" ; name = "zihad" },
+                    User().apply { id="1" ; name = "marno" }
+                )
             }, UpdatePolicy.ALL)
             copyToRealm(Book().apply {
                 id = "1"
                 name = "Book Blue"
+                user = realmListOf(
+                    User().apply { id="5" ; name = "budi" },
+                    User().apply { id="6" ; name = "bayan" }
+                )
             }, UpdatePolicy.ALL)
         }
 
-        Log.i("AOEU", "AFTER INPUT")
-        val list1 = realm.query<Book>().find()
-        list1.forEach {
-            Log.i("AOEU", it.name)
+        realm.query<Book>().find().forEach {
+            Log.i("AOEU", it.toString())
+        }
+
+        realm.query<Book>("user.id = $0", "5").find().forEach {
+            Log.i("AOEU", "OKEH $it")
         }
 
         realm.writeBlocking {
-            val query = query<Book>("name CONTAINS[c] $0", "blue")
-            delete(query)
-        }
-
-        Log.i("AOEU", "AFTER DELETE CONTAINS[c] BLUE")
-        val list2 = realm.query<Book>().find()
-        list2.forEach {
-            Log.i("AOEU", it.name)
-        }
-
-        Log.i("AOEU", "CONTAINS BLUE")
-        val list3 = realm.query<Book>("name CONTAINS[c] $0", "blue").find()
-        list3.forEach {
-            Log.i("AOEU", it.name)
+            val query = this.query<Book>().find()
+            this.delete(query)
         }
     }
 }
 
-    class Book : RealmObject {
-        @PrimaryKey
-        var id: String = UUID.randomUUID().toString()
-        var name: String = ""
+class Book : RealmObject {
+    @PrimaryKey
+    var id: String = UUID.randomUUID().toString()
+    var name: String = ""
+    var user: RealmList<User> = realmListOf()
+
+    override fun toString(): String {
+        return "Book(id='$id', name='$name', user=$user)"
     }
+}
+
+class User : RealmObject {
+    @PrimaryKey
+    var id: String = UUID.randomUUID().toString()
+    var name = ""
+
+    override fun toString(): String {
+        return "User(id='$id', name='$name')"
+    }
+}
