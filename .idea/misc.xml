@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/activity_main.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/activity_next.xml" value="0.2744762719110731" />
+        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/activity_next2.xml" value="0.2744762719110731" />
+        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/activity_next3.xml" value="0.2744762719110731" />
+        <entry key="..\:/Users/huawei-oktober21/StudioProjects/Experiment/app/src/main/res/layout/customer_display.xml" value="0.1671875" />
       </map>
     </option>
   </component>
