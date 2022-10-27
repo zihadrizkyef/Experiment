@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonAdd.setOnClickListener {
             val lastSize = listItem.size
-            repeat(50) {
+            repeat(59000) {
                 listItem.add(it.toString())
             }
             adapter.notifyItemRangeInserted(lastSize, listItem.size)
