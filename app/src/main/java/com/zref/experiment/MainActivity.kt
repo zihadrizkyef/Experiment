@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
         val json = """{name:"zihad", length:"56.88"}"""
         val mobile = Gson().fromJson(json, Mobile::class.java)
         Log.i("AOEU", "mobile $mobile")
-        Log.i("AOEU", "length ${mobile.length - 32}")
+        Log.i("AOEU", "length ${(mobile.length ?: 0.0) - 32.0}")
     }
 
-    data class Mobile(val name: String, val length: Double)
+    data class Mobile(val name: String? = null, val length: Double? = null)
 }
