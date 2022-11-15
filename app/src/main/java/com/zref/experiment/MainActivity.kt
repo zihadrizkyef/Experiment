@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        val list = listOf(
+        val listDouble = listOf(
             123_456_789.0,
             123_456_789.1,
             123_456_789.01,
@@ -32,8 +32,26 @@ class MainActivity : AppCompatActivity() {
             123_456_789.000000,
         )
 
-        binding.text.text = list.joinToString("\n")
-        binding.text2.text = list.joinToString("") { "->       " + it.toCurrency(false, "Rp") + "\n" }
+        binding.text.text = listDouble.joinToString("\n")
+        binding.text2.text = listDouble.joinToString("") { "->       " + it.toCurrency(false, "Rp") + "\n" }
+
+        val listString = listOf(
+            "Rp 123,456.0",
+            "Rp 123,456.1",
+            "Rp 123,456.01",
+            "Rp 123,456.100",
+            "Rp 123,456.1001",
+            "Rp 123,456.1010",
+            "Rp 123,456.1100",
+            "Rp 123,456.1101",
+            "Rp 123,456.1110",
+            "Rp 123,456.1110000001",
+            "Rp 123,456.111000000",
+            "Rp 123,456.000000",
+        )
+
+        binding.text3.text = listString.joinToString("\n")
+        binding.text4.text = listString.joinToString("") { "->       " + it.fromCurrency("$") + "\n" }
     }
 
     fun Double.toCurrency(showCurrency: Boolean = true, currency: String = "Rp "): String {
@@ -58,5 +76,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             formatter.format(this)
         }
+    }
+
+    fun String.fromCurrency(currencySymbol: String = "Rp "): Double {
+        val clean = if (currencySymbol.lowercase().startsWith("rp")) {
+            this.replace(Regex("[^0-9,]"), "")
+                .replace(",", ".")
+        } else {
+            this.replace(Regex("[^0-9.]"), "")
+        }
+        return clean.toDouble()
     }
 }
