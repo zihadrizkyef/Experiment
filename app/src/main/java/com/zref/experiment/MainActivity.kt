@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.text.text = list.joinToString("\n")
-        binding.text2.text = list.joinToString("") { "->       " + it.toCurrency("Rp ") + "\n" }
+        binding.text2.text = list.joinToString("") { "->       " + it.toCurrency(false, "Rp") + "\n" }
     }
 
-    fun Double.toCurrency(currency: String = ""): String {
-        val symbolConfig = if (currency.uppercase() == "RP") {
+    fun Double.toCurrency(showCurrency: Boolean = true, currency: String = "Rp "): String {
+        val symbolConfig = if (currency.uppercase().startsWith("RP")) {
             val decFormat = DecimalFormatSymbols.getInstance()
             decFormat.groupingSeparator = '.'
             decFormat.decimalSeparator = ','
@@ -53,6 +53,10 @@ class MainActivity : AppCompatActivity() {
         formatter.decimalFormatSymbols = symbolConfig
         formatter.maximumFractionDigits = 340
 
-        return "$currency${formatter.format(this)}"
+        return if (showCurrency) {
+            "$currency${formatter.format(this)}"
+        } else {
+            formatter.format(this)
+        }
     }
 }
