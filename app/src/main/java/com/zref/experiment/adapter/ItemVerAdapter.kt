@@ -4,19 +4,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.zref.experiment.databinding.ItemTextBinding
+import com.zref.experiment.databinding.ItemVerBinding
 
-class TextAdapter(val listItem: ArrayList<String>) :
-    RecyclerView.Adapter<TextAdapter.TextViewHolder>() {
+class ItemVerAdapter(val listItem: ArrayList<String>) :
+    RecyclerView.Adapter<ItemVerAdapter.TextViewHolder>() {
 
-    inner class TextViewHolder(val binding: ItemTextBinding) :
+    inner class TextViewHolder(val binding: ItemVerBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun getItemCount(): Int = listItem.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextViewHolder {
         Log.i("AOEU", "onCreateViewHolder()")
-        val binding = ItemTextBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemVerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TextViewHolder(binding)
     }
 

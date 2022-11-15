@@ -3,9 +3,9 @@ package com.zref.experiment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.zref.experiment.adapter.TextAdapter
+import com.zref.experiment.adapter.ItemHorAdapter
+import com.zref.experiment.adapter.ItemVerAdapter
 import com.zref.experiment.databinding.ActivityMainBinding
 
 /**
@@ -15,22 +15,24 @@ import com.zref.experiment.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val listItem = arrayListOf<String>()
-    private val adapter by lazy { TextAdapter(listItem) }
+    private val adapterVer by lazy { ItemVerAdapter(listItem) }
+    private val adapterHor by lazy { ItemHorAdapter(listItem) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView1.adapter = adapterHor
+        binding.recyclerView2.adapter = adapterVer
 
         binding.buttonAdd.setOnClickListener {
             val lastSize = listItem.size
             repeat(59000) {
                 listItem.add(it.toString())
             }
-            adapter.notifyItemRangeInserted(lastSize, listItem.size)
+            adapterHor.notifyItemRangeInserted(lastSize, listItem.size)
+            adapterVer.notifyItemRangeInserted(lastSize, listItem.size)
         }
     }
 }
