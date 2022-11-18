@@ -11,5 +11,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.buttonAnu.setOnClickListener {
+            binding.buttonAnu.isSelected = !binding.buttonAnu.isSelected
+        }
     }
 }
