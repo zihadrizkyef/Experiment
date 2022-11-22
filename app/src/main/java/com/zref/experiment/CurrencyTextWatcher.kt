@@ -16,12 +16,31 @@ class CurrencyTextWatcher(
     var separator: Char = ',',
 ) {
     private var editText: EditText? = null
+    var isShowZero = false
+        set(value) {
+            field = value
+            if (editText != null) {
+                if (field) {
+                    if (editText!!.text.toString() == currency) {
+                        editText!!.setText("0")
+                    }
+                } else {
+                    if (editText!!.text.toString() == currency + "0") {
+                        editText!!.setText(currency)
+                    }
+                }
+            }
+        }
 
     fun applyTo(editText: EditText) {
         this.editText = editText
 
         editText.inputType = InputType.TYPE_CLASS_PHONE or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-        editText.setText(currency)
+        if (isShowZero) {
+            editText.setText(currency + "0")
+        } else {
+            editText.setText(currency)
+        }
         editText.setSelection(currency.length)
         editText.keyListener = DigitsKeyListener.getInstance("0123456789$decimal")
 
@@ -46,7 +65,7 @@ class CurrencyTextWatcher(
                     var cursorPos = editText.selectionStart
                     val actionIsWrite = (prefString.length < it.length)
                     val actionIsDelete = (prefString.length > it.length)
-                    var textToFormat = it
+                    var textToFormat = it.toString()
 
                     //prevent to delete or write in [currency]
                     if (prefCursorStartPos <= startEditablePos) {
@@ -127,9 +146,15 @@ class CurrencyTextWatcher(
                         filteredText = currency + filteredText
                         cursorPos += currency.length
 
+                        if (filteredText == currency && isShowZero) {
+                            filteredText += "0"
+                        }
                         editText.setText(filteredText)
                         editText.setSelection(cursorPos)
                     } else {
+                        if (textToFormat == currency && isShowZero) {
+                            textToFormat += "0"
+                        }
                         editText.setText(textToFormat)
                         editText.setSelection(cursorPos)
                     }

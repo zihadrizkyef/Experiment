@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         textWatcher.applyTo(binding.edit1)
         binding.buttonConvert.setOnClickListener {
             Log.i("AOEU", "anu1 ${textWatcher.value}")
+            textWatcher.isShowZero = !textWatcher.isShowZero
         }
     }
 }
