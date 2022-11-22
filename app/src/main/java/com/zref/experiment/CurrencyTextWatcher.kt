@@ -150,15 +150,20 @@ class CurrencyTextWatcher(val editText: EditText) : TextWatcher {
                 }
             }
 
+            //prevent to write decimal as first char
+            if (actionIsWrite && textToFormat.startsWith(currency + decimal)) {
+                textToFormat = textToFormat.replaceFirst(Regex("$currency(\\$decimal)+"), currency)
+                cursorPos = startEditablePos
+            }
+
             if (textToFormat.length > currency.length) {
                 //delete money prefix
                 var filteredText = textToFormat.substring(currency.length)
                 cursorPos = max(0, cursorPos - currency.length)
 
                 //use only first decimal symbol
-                while(filteredText.count { it == decimal } > 1) {
+                while (filteredText.count { it == decimal } > 1) {
                     val lastDecimalPos = filteredText.lastIndexOf(decimal)
-                    Log.i("AOEU", "while " + filteredText + " ..... $decimal")
                     filteredText = filteredText.removeLastChar(decimal)
                     if (lastDecimalPos < cursorPos) {
                         cursorPos--
@@ -225,6 +230,6 @@ class CurrencyTextWatcher(val editText: EditText) : TextWatcher {
     }
 
     fun String.removeLastChar(char: Char): String {
-        return substringBeforeLast(char)+substringAfterLast(char)
+        return substringBeforeLast(char) + substringAfterLast(char)
     }
 }
