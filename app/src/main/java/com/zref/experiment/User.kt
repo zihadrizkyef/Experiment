@@ -9,4 +9,5 @@ open class User : RealmObject() {
     var id: String = UUID.randomUUID().toString()
     var name = ""
     var age = 0
+    var money = 0
 }

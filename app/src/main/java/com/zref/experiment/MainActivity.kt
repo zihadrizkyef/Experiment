@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val config = RealmConfiguration.Builder()
             .encryptionKey("2708198190123456789012345678901234567890123456789012345610102015".toByteArray())
-            .schemaVersion(1L)
+            .schemaVersion(2L)
             .migration(CustomRealmMigration())
             .allowWritesOnUiThread(true)
             .build()
@@ -41,10 +41,26 @@ class MainActivity : AppCompatActivity() {
             realm.executeTransaction {
                 it.insert(
                     listOf(
-                        User().apply { name = "Zihad" },
-                        User().apply { name = "Udin" },
-                        User().apply { name = "Budi" },
-                        User().apply { name = "Marno" },
+                        User().apply {
+                            name = "Zihad"
+                            age = 20
+                            money = 10
+                        },
+                        User().apply {
+                            name = "Udin"
+                            age = 15
+                            money = 13
+                        },
+                        User().apply {
+                            name = "Budi"
+                            age = 11
+                            money = 50
+                        },
+                        User().apply {
+                            name = "Marno"
+                            age = 57
+                            money = 75
+                        },
                     )
                 )
             }
@@ -56,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         realm.copyFromRealm(list)
         Log.i("AOEU", "getting data")
         list.forEach {
-            Log.i("AOEU", it.name)
+            Log.i("AOEU", "${it.name} ${it.age} ${it.money}")
         }
     }
 }
