@@ -1,9 +1,9 @@
 package com.zref.experiment
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.google.gson.Gson
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.GsonBuilder
 import com.zref.experiment.databinding.ActivityMainBinding
 import io.realm.*
 import io.realm.annotations.PrimaryKey
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     private fun fetchData() {
         val list = realm.where<Car>().findAll()
         val copy = realm.copyFromRealm(list)
-        Log.e("AOEU", Gson().toJson(copy))
+        Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy))
     }
 
     private fun updateData() {
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun deleteData() {
-        val find = realm.where<Car>().contains("name", "ari", Case.INSENSITIVE).findFirst()
+        val find = realm.where<User>().contains("name", "udi", Case.INSENSITIVE).findFirst()
         realm.executeTransaction {
             find?.deleteFromRealm()
         }
