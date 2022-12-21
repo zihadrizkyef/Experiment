@@ -22,11 +22,7 @@ class MainActivity : AppCompatActivity() {
         initRealm()
         insertData()
         fetchData()
-        updateData()
-        fetchData()
-        deleteData()
-        fetchData()
-        deleteAll()
+        clearData()
     }
 
     private fun initRealm() {
@@ -44,57 +40,56 @@ class MainActivity : AppCompatActivity() {
 
     private fun insertData() {
         realm.executeTransaction {
-            it.insertOrUpdate(Car().apply { name = "Lamborghini"; user = realmListOf(User().apply { name = "Zihad" }) })
-            it.insertOrUpdate(Car().apply { name = "Ferari"; user = realmListOf(User().apply { name = "Udin" }, User().apply { name = "Asep" }, User().apply { name = "Fuad" }) })
-            it.insertOrUpdate(Car().apply { name = "Angkot"; user = realmListOf(User().apply { name = "Marno" }) })
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.YEAR, 2022)
+            calendar.set(Calendar.MONTH, 10)
+            calendar.set(Calendar.DAY_OF_MONTH, 10)
+            it.insertOrUpdate(Task().apply { name = "Lamborghini"; date = calendar.time })
+
+            calendar.set(Calendar.DAY_OF_MONTH, 15)
+            it.insertOrUpdate(Task().apply { name = "Ferari"; date = calendar.time })
+
+            calendar.set(Calendar.DAY_OF_MONTH, 17)
+            it.insertOrUpdate(Task().apply { name = "Becak"; date = calendar.time })
+
+            calendar.set(Calendar.DAY_OF_MONTH, 20)
+            it.insertOrUpdate(Task().apply { name = "Angkot"; date = calendar.time })
         }
     }
 
     private fun fetchData() {
-        val list = realm.where<Car>().findAll()
+        val list = realm.where<Task>().findAll()
         val copy = realm.copyFromRealm(list)
+        Log.e("AOEU", "full fetch")
         Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy))
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, 2022)
+        calendar.set(Calendar.MONTH, 10)
+        calendar.set(Calendar.DAY_OF_MONTH, 14)
+        val date1 = calendar.time
+        calendar.set(Calendar.DAY_OF_MONTH, 18)
+        val date2 = calendar.time
+        val list2 = realm.where<Task>()
+            .between("date", date1, date2)
+            .findAll()
+        val copy2 = realm.copyFromRealm(list2)
+        Log.e("AOEU", "filter fetch")
+        Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy2))
     }
 
-    private fun updateData() {
-        val find = realm.where<Car>().contains("name", "gko", Case.INSENSITIVE).findFirst()
+    private fun clearData() {
         realm.executeTransaction {
-            find?.name = "Bus Dewi Sri"
-        }
-    }
-
-    private fun deleteData() {
-        val find = realm.where<User>().contains("name", "udi", Case.INSENSITIVE).findFirst()
-        realm.executeTransaction {
-            find?.deleteFromRealm()
-        }
-    }
-
-    private fun deleteAll() {
-        realm.executeTransaction {
-            realm.deleteAll()
+            it.delete(Task::class.java)
         }
     }
 }
 
-open class Car : RealmObject() {
+open class Task : RealmObject() {
 
     @PrimaryKey
     var id = UUID.randomUUID().toString()
     var name = ""
-    var user = realmListOf<User>()
+    var date = Date()
 
-}
-
-open class User : RealmObject() {
-
-    @PrimaryKey
-    var name = ""
-
-}
-
-fun <T> realmListOf(vararg objects: T): RealmList<T> {
-    val list = RealmList<T>()
-    list.addAll(objects)
-    return list
 }
