@@ -41,9 +41,8 @@ class MainActivity : AppCompatActivity() {
     private fun insertData() {
         realm.executeTransaction {
             val calendar = Calendar.getInstance()
-            calendar.set(Calendar.YEAR, 2022)
-            calendar.set(Calendar.MONTH, 10)
-            calendar.set(Calendar.DAY_OF_MONTH, 10)
+            calendar.set(2022, 10, 10, 0, 0, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
             it.insertOrUpdate(Task().apply { name = "Lamborghini"; date = calendar.time })
 
             calendar.set(Calendar.DAY_OF_MONTH, 15)
@@ -64,17 +63,13 @@ class MainActivity : AppCompatActivity() {
         Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy))
 
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, 2022)
-        calendar.set(Calendar.MONTH, 10)
-        calendar.set(Calendar.DAY_OF_MONTH, 14)
-        val date1 = calendar.time
-        calendar.set(Calendar.DAY_OF_MONTH, 18)
-        val date2 = calendar.time
+        calendar.set(2022, 10, 15, 0, 0, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
         val list2 = realm.where<Task>()
-            .between("date", date1, date2)
+            .equalTo("date", calendar.time)
             .findAll()
         val copy2 = realm.copyFromRealm(list2)
-        Log.e("AOEU", "filter fetch")
+        Log.e("AOEU", "filter fetch : ${calendar.time}")
         Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy2))
     }
 
