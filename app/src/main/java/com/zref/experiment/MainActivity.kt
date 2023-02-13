@@ -15,23 +15,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var timer = Timer()
-        var taskTimer: TimerTask = object : TimerTask() {
-            override fun run() {
-                Log.i("AOEU", "timer executed")
-            }
-        }
-        timer.scheduleAtFixedRate(taskTimer, 0, 2000L)
-
-        Handler().postDelayed({
-            timer.cancel()
-            timer = Timer()
-            taskTimer = object : TimerTask() {
+        binding.buttonStart.setOnClickListener {
+            var timer = Timer()
+            var taskTimer: TimerTask = object : TimerTask() {
                 override fun run() {
-                    Log.i("AOEU", "timer executed changed")
+                    Log.i("AOEU", "timer executed")
                 }
             }
-            timer.scheduleAtFixedRate(taskTimer, 0, 1000)
-        }, 5000)
+            timer.scheduleAtFixedRate(taskTimer, 5000L, 2000L)
+        }
     }
 }
