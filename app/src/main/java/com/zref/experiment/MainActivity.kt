@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.GsonBuilder
 import com.zref.experiment.databinding.ActivityMainBinding
 import io.realm.*
+import io.realm.annotations.LinkingObjects
 import io.realm.annotations.PrimaryKey
 import io.realm.kotlin.where
+import org.bson.types.ObjectId
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -21,10 +23,6 @@ class MainActivity : AppCompatActivity() {
 
         initRealm()
         insertData()
-        fetchData()
-        updateData()
-        fetchData()
-        deleteData()
         fetchData()
         deleteAll()
     }
@@ -51,23 +49,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchData() {
-        val list = realm.where<Car>().findAll()
-        val copy = realm.copyFromRealm(list)
+        val list = realm.where<Car>().equalTo("user.name", "asep", Case.INSENSITIVE).findAll()
+        val copy = realm.copyFromRealm(list.first())
         Log.e("AOEU", GsonBuilder().setPrettyPrinting().create().toJson(copy))
-    }
-
-    private fun updateData() {
-        val find = realm.where<Car>().contains("name", "gko", Case.INSENSITIVE).findFirst()
-        realm.executeTransaction {
-            find?.name = "Bus Dewi Sri"
-        }
-    }
-
-    private fun deleteData() {
-        val find = realm.where<User>().contains("name", "udi", Case.INSENSITIVE).findFirst()
-        realm.executeTransaction {
-            find?.deleteFromRealm()
-        }
     }
 
     private fun deleteAll() {
