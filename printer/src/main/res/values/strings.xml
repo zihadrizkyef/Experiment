@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="printer_not_connected">Printer is not connected!</string>
+    <string name="printer_connected">Printer is connected!</string>
+    <string name="printer_ready">Printer is ready</string>
+    <string name="check_paper_tray">The printer is not ready, please check paper tray!</string>
+</resources>
