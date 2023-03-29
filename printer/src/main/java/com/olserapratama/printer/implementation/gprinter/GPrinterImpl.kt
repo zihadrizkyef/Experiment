@@ -4,6 +4,7 @@ import android.content.Context
 import com.olserapratama.printer.util.IPrinter
 import com.olserapratama.printer.util.PrintLine
 import com.olserapratama.printer.repository.Setting
+import timber.log.Timber
 import kotlin.concurrent.thread
 
 class GPrinterImpl (
@@ -11,7 +12,8 @@ class GPrinterImpl (
     override var connectedPrinter: Setting
 ) : IPrinter {
     override fun connect(listener: (message: String) -> Unit) {
-        listener(GPrinterFunctions.connect(context, connectedPrinter))
+        Timber.i("AOEU printer aaaaaa")
+        GPrinterFunctions.connect(context, connectedPrinter, listener)
     }
 
     override fun isConnected(): Boolean {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.olserapratama.printer.util.IPrinter
 import com.olserapratama.printer.util.PrintLine
 import com.olserapratama.printer.repository.Setting
+import timber.log.Timber
 import kotlin.concurrent.thread
 
 class MiniPosPrinterImpl (
@@ -11,7 +12,9 @@ class MiniPosPrinterImpl (
     override var connectedPrinter: Setting
 ) : IPrinter {
     override fun connect(listener: (message: String) -> Unit) {
-        listener(MiniPosFunctions.connect(context, connectedPrinter))
+        Timber.i("AOEU anuuuuuu")
+        MiniPosFunctions.connect(context, connectedPrinter)
+        Timber.i("AOEU anuuuuuu selesai")
     }
 
     override fun isConnected(): Boolean {

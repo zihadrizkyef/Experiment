@@ -1,8 +1,9 @@
 package com.olserapratama.printer.implementation.gprinter
 
 import android.content.Context
-import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import android.os.Handler
+import android.os.Looper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -10,7 +11,6 @@ import com.gprinter.command.EscCommand
 import com.gprinter.command.LabelCommand
 import com.olserapratama.printer.R
 import com.olserapratama.printer.libs.gprinterlibs.GPDeviceConnFactoryManager
-import com.olserapratama.printer.libs.gprinterlibs.GPUtils
 import com.olserapratama.printer.repository.DeviceInterface
 import com.olserapratama.printer.repository.Setting
 import com.olserapratama.printer.util.*
@@ -23,11 +23,8 @@ import kotlin.concurrent.thread
 
 object GPrinterFunctions {
     var statusPrinter = false
-    private var gPrinter: GPDeviceConnFactoryManager? = null
-    var idPrinter = 0
 
-    fun connect(context: Context, printerSetting: Setting): String{
-        var connectMessage = ""
+    fun connect(context: Context, printerSetting: Setting, listener: (message: String) -> Unit) {
         Timber.i("AOEU printer building")
         when (printerSetting.deviceInterface) {
             DeviceInterface.BLUETOOTH.code -> {
@@ -53,7 +50,7 @@ object GPrinterFunctions {
             else -> {
                 val mUsbManger = context.getSystemService(Context.USB_SERVICE) as UsbManager
                 val deviceList = mUsbManger.deviceList
-                if (deviceList.isNotEmpty()){
+                if (deviceList.isNotEmpty()) {
                     val usbDevice = deviceList.values.elementAt(0)
 
                     GPDeviceConnFactoryManager.Build()
@@ -69,27 +66,32 @@ object GPrinterFunctions {
         }
 
         try {
-            statusPrinter = if (GPDeviceConnFactoryManager.getDeviceConnFactoryManagers().isNotEmpty() &&  GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0] != null) {
+            statusPrinter = if (GPDeviceConnFactoryManager.getDeviceConnFactoryManagers().isNotEmpty() && GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0] != null) {
                 thread {
-                    Timber.i("AOEU printer connecting")
-                    GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0].openPort()
-                    //gPrinter?.openPort()
+                    val handler = Handler(Looper.getMainLooper())
+                    val runnable = Runnable {
+                        listener(context.getString(R.string.printer_connected))
+                        Timber.i("AOEU printer connected")
+                    }
+                    handler.postDelayed(runnable, 3000)
+                    try {
+                        Timber.i("AOEU printer connecting")
+                        GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0].openPort()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        handler.removeCallbacks(runnable)
+                        Timber.i("AOEU printer failed to connect")
+                    }
                 }
-//                gPrinter?.openPort()
-                connectMessage = context.getString(R.string.printer_connected)
-                Timber.i("AOEU printer connected")
                 true
             } else {
                 Timber.i("AOEU printer failed to connect")
-                connectMessage = context.getString(R.string.printer_not_connected)
                 false
             }
         } catch (e: Exception) {
             Timber.i("AOEU printer failed to connect")
-            connectMessage = e.message!!
             statusPrinter = false
         }
-        return  connectMessage
     }
 
     fun disconnect() {
@@ -100,7 +102,7 @@ object GPrinterFunctions {
     }
 
     fun printReceipt(context: Context, lines: List<PrintLine>, printerSetting: Setting): Boolean {
-        for (i in GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()){
+        for (i in GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()) {
             println("LIST GPDEVICE: $i")
         }
 //        if (GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0] == null ||
@@ -171,7 +173,7 @@ object GPrinterFunctions {
             return GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0].sendDataImmediately(datas)
 //            return gPrinter?.sendDataImmediately(datas)!!
 
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             return false
         }
@@ -180,7 +182,9 @@ object GPrinterFunctions {
     fun openDrawer(): Boolean {
         if (GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0] == null ||
             !GPDeviceConnFactoryManager.getDeviceConnFactoryManagers()[0].connState
-        ) { return false }
+        ) {
+            return false
+        }
 
         val esc = EscCommand()
         esc.addInitializePrinter()
