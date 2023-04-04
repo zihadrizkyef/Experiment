@@ -11,6 +11,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.zref.experiment.databinding.ActivityMainBinding
 import java.text.DecimalFormat
+import kotlin.math.max
+import kotlin.math.min
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,9 +51,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.chart.xAxis.axisMinimum = 0f
-        binding.chart.xAxis.axisMaximum = 15f
-        binding.chart.xAxis.setLabelCount(16, true)
         binding.chart.xAxis.valueFormatter = object : ValueFormatter() {
             val decimalFormat = DecimalFormat()
             override fun getFormattedValue(value: Float): String {
@@ -63,12 +62,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.chart.axisLeft.axisMinimum = 2f
-        binding.chart.axisLeft.axisMaximum = 16f
-        binding.chart.axisLeft.setLabelCount(15, true)
-
+        val entries = generateLineDataSet()
         val data = LineData()
-        data.addDataSet(generateLineDataSet())
+        data.addDataSet(entries)
+
+        binding.chart.xAxis.axisMinimum = entries.xMin - 1
+        binding.chart.xAxis.axisMaximum = entries.xMax + 1
+        binding.chart.xAxis.setLabelCount(min(10, ((entries.xMax + 1) - (entries.xMin - 1)).toInt() + 1), false)
+
+        binding.chart.axisLeft.axisMinimum = entries.yMin - 1
+        binding.chart.axisLeft.axisMaximum = entries.yMax + 1
+        binding.chart.axisLeft.setLabelCount(min(7, ((entries.yMax + 1) - (entries.yMin - 1)).toInt() + 1), false)
 
         binding.chart.data = data
         binding.chart.invalidate()
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun generateLineDataSet(): ILineDataSet {
         val entries = ArrayList<Entry>()
-        entries.add(Entry(1f, 4f))
+        entries.add(Entry(1f, 3f))
         entries.add(Entry(2f, 3f))
         entries.add(Entry(3f, 5f))
         entries.add(Entry(4f, 6f))
@@ -90,8 +94,6 @@ class MainActivity : AppCompatActivity() {
         entries.add(Entry(12f, 14f))
         entries.add(Entry(13f, 13f))
         entries.add(Entry(14f, 15f))
-
-
 
         val dataSet = LineDataSet(entries, "Label")
         dataSet.color = ContextCompat.getColor(this, R.color.brand)
