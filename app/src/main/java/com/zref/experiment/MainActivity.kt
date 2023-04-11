@@ -11,7 +11,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.zref.experiment.databinding.ActivityMainBinding
 import java.text.DecimalFormat
-import kotlin.math.max
 import kotlin.math.min
 
 
