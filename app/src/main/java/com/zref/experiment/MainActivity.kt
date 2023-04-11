@@ -20,9 +20,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.root.setOnClickListener {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.anu)
-
             binding.anu.animateChilds {
                 it.clear(binding.textTop.id, ConstraintSet.TOP)
                 it.clear(binding.textBottom.id, ConstraintSet.TOP)
