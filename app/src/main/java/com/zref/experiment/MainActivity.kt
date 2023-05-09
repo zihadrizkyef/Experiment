@@ -13,12 +13,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val list = listOf(
-            Filter(false, "Zihad"),
-            Filter(false, "Rizky"),
-            Filter(false, "Edwin"),
-            Filter(false, "Fikri"),
-        )
+        val list = arrayListOf<Filter>()
+        repeat(8) {
+            list.addAll(listOf(
+                Filter(false, "Zihad"),
+                Filter(false, "Rizky"),
+                Filter(false, "Edwin"),
+                Filter(false, "Fikri"),
+            ))
+        }
+
         val adapter = FilterAdapter(list)
         binding.recyclerFilter.adapter = adapter
         binding.buttonShow.setOnClickListener {
