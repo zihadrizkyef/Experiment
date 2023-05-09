@@ -2,6 +2,7 @@ package com.zref.experiment
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.view.GravityCompat
 import com.zref.experiment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -11,5 +12,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val list = listOf(
+            Filter(false, "Zihad"),
+            Filter(false, "Rizky"),
+            Filter(false, "Edwin"),
+            Filter(false, "Fikri"),
+        )
+        val adapter = FilterAdapter(list)
+        binding.recyclerFilter.adapter = adapter
+        binding.buttonShow.setOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.END)
+        }
+        binding.buttonClose.setOnClickListener {
+            binding.drawerLayout.closeDrawers()
+        }
     }
 }
