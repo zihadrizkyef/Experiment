@@ -22,4 +22,22 @@
         android:textColor="@color/black"
         android:textSize="24sp" />
 
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/box"
+        android:layout_width="100dp"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layoutDescription="@xml/scene_child">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BODY"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
 </androidx.constraintlayout.motion.widget.MotionLayout>
