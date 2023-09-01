@@ -7,9 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zref.experiment.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -24,40 +21,55 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.a.observe(this) {
-            binding.textView.text = binding.textView.text.toString() + "\n" + it.toString()
+        viewModel.text.observe(this) {
+            binding.textView.text = it
         }
 
-        viewModel.add1()
-        viewModel.add2()
+        viewModel.add1500()
+        viewModel.add700()
     }
 
     class ViewModelAnu : ViewModel() {
-        val a = MutableLiveData<Int>()
+        val repository = RepositoryAnu()
+        val text = MutableLiveData("Hello World!")
         val mutex = Mutex()
 
-        fun add1() {
+        fun add1500() {
             viewModelScope.launch {
-                flow<Any> {
-                    Thread.sleep(3000)
-                    a.postValue(3000)
-                }.flowOn(Dispatchers.IO).collect()
-            }
-        }
-
-        fun add2() {
-            viewModelScope.launch {
+                println("ANU wkwkwk1")
                 mutex.withLock {
-                    withContext(Dispatchers.IO) {
-                        a.postValue(add2b())
-                    }
+                    println("ANU wkwkwk2")
+                    text.value = repository.repoAdd1500(text.value!!)
+                    println("ANU wkwkwk3")
                 }
             }
         }
 
-        private fun add2b(): Int {
-            Thread.sleep(1000)
-            return 1000
+        fun add700() {
+            viewModelScope.launch {
+                println("ANU wkwkwk4")
+                mutex.withLock {
+                    println("ANU wkwkwk5")
+                    text.value = repository.repoAdd700(text.value!!)
+                    println("ANU wkwkwk6")
+                }
+            }
+        }
+    }
+
+    class RepositoryAnu {
+        suspend fun repoAdd1500(current: String): String {
+            return withContext(Dispatchers.IO) {
+                Thread.sleep(1500)
+                "$current\n1500"
+            }
+        }
+
+        suspend fun repoAdd700(current: String): String {
+            return withContext(Dispatchers.IO) {
+                Thread.sleep(700)
+                "$current\n700"
+            }
         }
     }
 }
