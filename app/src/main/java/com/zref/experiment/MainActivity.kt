@@ -2,15 +2,22 @@ package com.zref.experiment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zref.experiment.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,8 +28,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.button1500.setOnClickListener {
+            viewModel.add1500()
+        }
+
+        binding.button700.setOnClickListener {
+            viewModel.add700()
+        }
+
         viewModel.text.observe(this) {
             binding.textView.text = it
+        }
+
+        viewModel.isRunningProcess.observe(this) {
+            println("STATUS PROGRESS LOADING: $it")
+            binding.progress.isVisible = it
         }
 
         viewModel.add1500()
@@ -32,26 +52,34 @@ class MainActivity : AppCompatActivity() {
     class ViewModelAnu : ViewModel() {
         val repository = RepositoryAnu()
         val text = MutableLiveData("Hello World!")
+        val isRunningProcess = MutableLiveData(false)
         val mutex = Mutex()
 
         fun add1500() {
-            viewModelScope.launch {
-                println("ANU wkwkwk1")
-                mutex.withLock {
-                    println("ANU wkwkwk2")
-                    text.value = repository.repoAdd1500(text.value!!)
-                    println("ANU wkwkwk3")
-                }
+            viewModelScope.processSalesOrder {
+                text.value = repository.repoAdd1500(text.value!!)
             }
         }
 
         fun add700() {
-            viewModelScope.launch {
-                println("ANU wkwkwk4")
-                mutex.withLock {
-                    println("ANU wkwkwk5")
-                    text.value = repository.repoAdd700(text.value!!)
-                    println("ANU wkwkwk6")
+            viewModelScope.processSalesOrder {
+                text.value = repository.repoAdd700(text.value!!)
+            }
+        }
+
+
+        private fun CoroutineScope.processSalesOrder(
+            action: suspend () -> Unit
+        ) {
+            launch {
+                mutex.lock()
+
+                try {
+                    isRunningProcess.value = mutex.isLocked
+                    action()
+                } finally {
+                    mutex.unlock()
+                    isRunningProcess.value = mutex.isLocked
                 }
             }
         }

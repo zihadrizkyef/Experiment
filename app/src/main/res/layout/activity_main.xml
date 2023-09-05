@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -28,5 +29,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:trackColor="#00000000"
         app:trackThickness="5dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button1500"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="1500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button700"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/button1500" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
