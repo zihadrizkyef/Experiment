@@ -6,6 +6,7 @@ import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.core.widget.doOnTextChanged
 import com.zref.experiment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -27,8 +28,14 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
-        binding.textInfo.text = binding.textInfo.text.toString() + "\nTotal user = ${UserDatabase.users.size}"
+        binding.textInfo.text =
+            binding.textInfo.text.toString() + "\nTotal user = ${UserDatabase.users.size}"
 
-        binding.recyclerView.adapter = UserAdapter()
+        val adapter = UserAdapter()
+        binding.recyclerView.adapter = adapter
+
+        binding.inputSearch.doOnTextChanged { text, _, _, _ ->
+            adapter.searchName(text.toString())
+        }
     }
 }

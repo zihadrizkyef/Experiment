@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zref.experiment.databinding.ItemUserBinding
 
 class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
-    override fun getItemCount() = UserDatabase.users.size
-
     private var holderCount = 0
+    private var list = UserDatabase.users
+
+    override fun getItemCount() = list.size
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +31,15 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
         position: Int
     ) {
         Log.i("AOEU", "onBindViewHolder called for position $position")
-        holder.binding.textView.text = (position+1).toString() + ". " + UserDatabase.users[position]
+        holder.binding.textView.text =
+            (position + 1).toString() + ". " + list[position]
+    }
+
+    fun searchName(name: String) {
+        list = UserDatabase.users.filter { it.contains(name, true) }
+        notifyDataSetChanged()
+
+        Log.i("AOEU", list.joinToString("\n"))
     }
 
     class ViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root)
