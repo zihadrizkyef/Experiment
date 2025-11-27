@@ -26,9 +26,5 @@ class MainActivity : AppCompatActivity() {
             )
             WindowInsetsCompat.CONSUMED
         }
-
-        binding.textInfo.text = binding.textInfo.text.toString() + "\nTotal user = ${UserDatabase.users.size}"
-
-        binding.recyclerView.adapter = UserAdapter()
     }
 }
