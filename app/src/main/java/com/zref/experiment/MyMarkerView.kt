@@ -1,18 +1,24 @@
 package com.zref.experiment
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.TextView
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.zref.experiment.databinding.MarkerViewBinding
 
+@SuppressLint("ViewConstructor")
 class MyMarkerView(context: Context, layoutResource: Int) : MarkerView(context, layoutResource) {
 
-    private val tvContent: TextView = findViewById(R.id.tvContent)
+    private val binding: MarkerViewBinding
+
+    init {
+        binding = MarkerViewBinding.bind(getChildAt(0))
+    }
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
-        tvContent.text = e?.y.toString()
+        binding.tvContent.text = e?.y?.toInt()?.toString() ?: ""
         super.refreshContent(e, highlight)
     }
 

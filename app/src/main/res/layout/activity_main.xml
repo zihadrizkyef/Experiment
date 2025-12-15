@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#faa"
     tools:context=".MainActivity">
 
     <TextView
@@ -20,9 +21,10 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
-        app:layout_constraintBottom_toTopOf="@+id/textFooter" />
+        android:layout_height="200dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/textFooter"
+        app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
     <TextView
         android:id="@+id/textFooter"
