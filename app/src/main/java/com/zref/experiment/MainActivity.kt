@@ -48,9 +48,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.textFooter.setOnClickListener {
             if (isFullChart) {
-                setupLineChart(30, 6f)
+                setupLineChart(30)
+                binding.lineChart.zoom(6F, 1F, 0F, 0F)
             } else {
-                setupLineChart(6, 1f)
+                setupLineChart(6)
+                binding.lineChart.fitScreen()
             }
             isFullChart = !isFullChart
         }
@@ -58,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         binding.textFooter.performClick()
     }
 
-    private fun setupLineChart(count: Int, zoom: Float) {
+    private fun setupLineChart(count: Int) {
         val entries = List(count) { Entry(it.toFloat(), Random.nextInt(100).toFloat()) }
 
         val dataSet = LineDataSet(entries, "Sample Data").apply {
@@ -70,7 +72,5 @@ class MainActivity : AppCompatActivity() {
         binding.lineChart.data = LineData(dataSet)
         binding.lineChart.invalidate()
         binding.lineChart.animateXY(500, 500)
-        binding.lineChart.fitScreen()
-        binding.lineChart.zoom(zoom, 1F, 0F, 0F)
     }
 }
