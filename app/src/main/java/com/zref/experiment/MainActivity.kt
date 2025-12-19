@@ -6,6 +6,7 @@ import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.bumptech.glide.Glide
 import com.zref.experiment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -26,5 +27,9 @@ class MainActivity : AppCompatActivity() {
             )
             WindowInsetsCompat.CONSUMED
         }
+
+        Glide.with(this)
+            .load("https://api-biz.sewarung.com/img/category_outcome/persediaan.svg")
+            .into(binding.imageSvg)
     }
 }
