@@ -1,8 +1,9 @@
 package com.zref.experiment
 
+import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -20,10 +21,10 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             binding.textTitle.updatePadding(
-                top = insets.top + dpToPx(
-                    16f,
-                    resources.displayMetrics
-                ).toInt()
+                top = insets.top + 16.dpToPx()
+            )
+            binding.recyclerView.updatePadding(
+                bottom = 100.dpToPx()
             )
             WindowInsetsCompat.CONSUMED
         }
@@ -37,5 +38,13 @@ class MainActivity : AppCompatActivity() {
         binding.inputSearch.doOnTextChanged { text, _, _, _ ->
             adapter.searchName(text.toString())
         }
+    }
+
+    fun Int.dpToPx(): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            resources.displayMetrics
+        ).toInt()
     }
 }
