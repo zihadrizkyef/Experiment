@@ -70,10 +70,6 @@ class MainActivity : AppCompatActivity() {
         binding.imageCaptureButton.setOnClickListener {
             captureImage()
         }
-
-        binding.videoCaptureButton.setOnClickListener {
-            captureVideo()
-        }
     }
 
     override fun onDestroy() {
@@ -141,10 +137,6 @@ class MainActivity : AppCompatActivity() {
 
             }
         )
-    }
-
-    private fun captureVideo() {
-
     }
 
     private fun requestPermissions() {
