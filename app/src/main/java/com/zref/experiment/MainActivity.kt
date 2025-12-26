@@ -3,6 +3,8 @@ package com.zref.experiment
 import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -20,8 +22,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.zref.experiment.databinding.ActivityMainBinding
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -43,7 +47,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var imageCapture: ImageCapture? = null
-    private lateinit var cameraExecutor: ExecutorService
 
     private val permissionLauncher =
         registerForActivityResult(
@@ -74,7 +77,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        imageCapture?.targetRotation = binding.cameraPreview.display.rotation
     }
 
     private fun startCamera() {
@@ -82,10 +90,12 @@ class MainActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().build().apply {
-                setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                setSurfaceProvider(binding.cameraPreview.surfaceProvider)
             }
 
             imageCapture = ImageCapture.Builder().build()
+            imageCapture?.targetRotation = binding.cameraPreview.display.rotation
+
 
             try {
                 cameraProvider.unbindAll()
@@ -107,6 +117,7 @@ class MainActivity : AppCompatActivity() {
 
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
+
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
@@ -125,14 +136,26 @@ class MainActivity : AppCompatActivity() {
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
-            object: ImageCapture.OnImageSavedCallback {
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Toast.makeText(this@MainActivity, "Berhasil save di ${outputFileResults.savedUri.toString()}", Toast.LENGTH_SHORT).show()
+                    outputFileResults.savedUri?.let { uri ->
+                        binding.imagePreview.isVisible = true
+
+                        contentResolver.openInputStream(uri).use { inputStream ->
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            binding.imagePreview.setImageBitmap(bitmap)
+                            Toast.makeText(this@MainActivity, "Berhasil save di $uri", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
 
                 override fun onError(exception: ImageCaptureException) {
                     exception.printStackTrace()
-                    Toast.makeText(this@MainActivity, "Gagal save gambar ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Gagal save gambar ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             }
