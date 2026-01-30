@@ -26,5 +26,8 @@ class MainActivity : AppCompatActivity() {
             )
             WindowInsetsCompat.CONSUMED
         }
+
+        binding.stubHere.layoutResource = R.layout.view_textanu
+        binding.stubHere.inflate()
     }
 }
